@@ -1,20 +1,40 @@
 import * as PIXI from 'pixi.js'
+import {GlowFilter} from '@pixi/filter-glow';
+import { Player } from './player';
+import { canvasSize } from './utils'
 
 const app = new PIXI.Application({
-  width: 720,
-  height: 1280,
-  backgroundColor: 0x1099bb,
+  backgroundColor: 0x000000,
+  width: canvasSize().width,
+  height: canvasSize().height,
   view: document.querySelector('#scene'),
-  resolution: window.devicePixelRatio || 1
+  resolution: window.devicePixelRatio || 1,
+  antialias: true,
 });
 
-const texture = PIXI.Texture.from('assets/bunny.png');
-const bunny = new PIXI.Sprite(texture);
-bunny.anchor.set(0.5);
-bunny.x = 160
-bunny.y = 160
-app.stage.addChild(bunny);
+const sprite = new PIXI.Sprite();
+const pathLines = new PIXI.Graphics();
+
+pathLines.lineStyle(5, 0xFFFFFF, 1);
+pathLines.moveTo(0, 0);
+pathLines.lineTo(0, -100);
+pathLines.lineTo(150, 150);
+pathLines.lineTo(240, 100);
+
+pathLines.position.x = 320;
+pathLines.position.y = 150;
+
+sprite.addChild(pathLines);
+
+app.stage.addChild(sprite);
+
+const player = new Player(app.stage);
+
+sprite.filters = [
+  new GlowFilter({ distance: 1, outerStrength: 1, color:0xff0000 })
+];
 
 app.ticker.add((delta) => {
-  bunny.rotation -= 0.01 * delta;
+  player.render()
+  pathLines.y++
 });
