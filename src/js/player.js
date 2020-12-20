@@ -1,7 +1,6 @@
 import * as PIXI from 'pixi.js'
 import { TweenMax } from 'gsap/all'
 import { canvasSize } from './utils'
-import { Tween } from 'gsap/gsap-core'
 
 const SIZE = 700
 const INSISE_SIZE = SIZE * 0.7
@@ -26,26 +25,34 @@ const triangule = [
 
 
 export class Player{
-    constructor(stage) {
-        this.levitation = 0
-        this.currentIndexSong = 2
+    constructor(stage, prismic, trackManager, container) {
+        this.trackManager = trackManager
+        this.trackNumber = 0
+        this.color1 = null
+        this.color2 = null
+        this.isFirst = true
+        this.loading = true
+        this.audio = new Audio()
+        //this.audio.volume = 0
+        this.song = 0
         this.playing = false
         this.percent = 0
         this.stage = stage
+        this.data = prismic.data.results
         this.playerSprite = new PIXI.Sprite();
         this.graphicsBackground = new PIXI.Graphics();
         this.graphics = new PIXI.Graphics();
         this.button = new PIXI.Graphics();
         this.buttonSprite = new PIXI.Sprite();
         
-        this.graphicsBackground.pivot.set(SIZE/2, SIZE/2)
-        this.graphics.pivot.set(SIZE/2, SIZE/2)
         
-        this.playerSprite.addChild(this.graphicsBackground);
         this.playerSprite.addChild(this.graphics);
+        this.playerSprite.addChild(this.graphicsBackground);
         this.playerSprite.addChild(this.buttonSprite);
-        
-        stage.addChild(this.playerSprite)
+
+        this.playerSprite.zIndex = 99999999
+
+        container.addChild(this.playerSprite)
 
         this.graphicsBackground.lineStyle(1, 0x333333, 1);
         
@@ -54,36 +61,62 @@ export class Player{
 
         this.buttonSprite.interactive = true
 
-        this.graphicsBackground.alpha = 0
         this.graphics.alpha = 0
 
-        this.buttonSprite.mouseover = () => {
-            TweenMax.to(this.graphics, 1, { alpha: 1 })
-            TweenMax.to(this.graphicsBackground, 1, { alpha: 1 })
-        }
-
-        this.buttonSprite.mouseout = () => {
-            TweenMax.to(this.graphics, 1, { alpha: 0 })
-            TweenMax.to(this.graphicsBackground, 1, { alpha: 0 })
-        }
 
         this.buttonSprite.tap = this.buttonSprite.click = this.tooglePlay.bind(this)
 
-        this.draw()
+        //this.draw()
+        
+        //document.querySelector('#comenzar').onclick = this.loadSong.bind(this);
+    }
+
+    setTrack(trackNumber) {
+        this.trackNumber = trackNumber
+        const { color1, color2 } = this.trackManager.getColors()
+        this.setColors(color1, color2)
+    }
+
+    setColors(color1, color2) {
+        this.color1 = color1
+        this.color2 = color2
+    }
+
+    loadSong() {
+        this.loading = true
+        this.audio.src = this.data[this.song].data.track.track.value.file.url
+        //this.audio.addEventListener('canplaythrough', () => {
+            this.loading = false
+            this.audio.play()
+
+            if (this.isFirst) {
+                TweenMax.to(document.querySelector('aside'), 2, { opacity: 0, onComplete: () => {
+                    document.querySelector('aside').style.display = 'none'
+                }})
+                this.isFirst = false
+            }
+
+            this.trackManager.setTrackDuration(this.audio.duration)
+        //}, false)
+
+        return false
     }
 
     tooglePlay() {
+        if (this.play) {
+            this.audio.pause()
+        } else {
+            this.audio.play()
+        }
+
         this.playing = !this.playing
         this.draw()
-        this.percent = 0
+        this.percent = 0   
     }
 
     draw() {
-        
-        this.graphicsBackground.drawPolygon(path);
+        /* this.graphicsBackground.drawPolygon(path);
 
-        this.graphicsBackground.x = canvasSize().width / 2
-        this.graphicsBackground.y = canvasSize().height / 2
         this.graphics.x = canvasSize().width / 2 
         this.graphics.y = canvasSize().height / 2
         
@@ -101,40 +134,34 @@ export class Player{
             this.button.drawRect(0, 0, BUTTON_SIZE * .4, BUTTON_SIZE)
             this.button.drawRect(BUTTON_SIZE *.5, 0, BUTTON_SIZE * .4, BUTTON_SIZE)
             this.button.endFill()
-        }
+        } */
+        
+    }
+
+    getAudioPlayingPercent() {
+        return this.audio.currentTime * this.getAudioDuration() / 100
+    }
+
+    getAudioDuration() {
+        return this.audio.duration
     }
 
     render() {
-        this.percent += 0.001
-        
-        if (this.percent >= 1) {
-            this.percent = 0
-            this.currentIndexSong++
+        if (this.getAudioDuration()) {
+            /* const { width, height } = canvasSize()
+            const square = 10
+            
+            this.graphicsBackground.clear()
+
+            this.graphicsBackground.beginFill(0x000);
+            this.graphicsBackground.drawRect(0, height - square, width, square);
+            this.graphicsBackground.endFill()
+
+            this.graphicsBackground.beginFill(0xff0000);
+            this.graphicsBackground.drawRect(0, height - square, (width * this.getAudioPlayingPercent()) / 100, square);
+            this.graphicsBackground.endFill() */
+            
+            this.trackManager.setTrackCurrentTime(this.audio.currentTime)
         }
-
-        const minmalPath = path.slice(0, this.currentIndexSong * 2)
-        this.graphics.clear()
-        this.graphics.lineStyle(1, 0xfff00, 1);
-        let from = []
-        minmalPath.forEach((l, i) => {
-            if (i % 2 === 0) {
-                this.graphics
-                    .moveTo(minmalPath[i - 2], minmalPath[i - 1])
-                    .lineTo(minmalPath[i], minmalPath[i + 1]);
-                from = [minmalPath[i], minmalPath[i + 1]]
-            }
-        })
-
-        const currentPathIndex = (this.currentIndexSong) * 2
-        
-        const x2 = from[0] + this.percent * (path[currentPathIndex]-from[0]);
-        const y2 = from[1] + this.percent * (path[currentPathIndex+1]-from[1]);
-
-        this.graphics
-            .lineTo(
-                x2, y2 
-            );
-        this.levitation += 0.001
-        this.playerSprite.y = Math.sin(this.levitation) * 50
     }
 }
