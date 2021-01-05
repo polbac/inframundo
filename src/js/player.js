@@ -33,6 +33,7 @@ export class Player{
         this.isFirst = true
         this.loading = true
         this.audio = new Audio()
+        this.audio.onended = this.endAudio.bind(this)
         //this.audio.volume = 0
         this.song = 0
         this.playing = false
@@ -70,6 +71,10 @@ export class Player{
         
         //document.querySelector('#comenzar').onclick = this.loadSong.bind(this);
     }
+    
+    endAudio() {
+        this.next()
+    }
 
     setTrack(trackNumber) {
         this.trackNumber = trackNumber
@@ -88,16 +93,10 @@ export class Player{
         //this.audio.addEventListener('canplaythrough', () => {
             this.loading = false
             this.audio.play()
-
-            if (this.isFirst) {
-                TweenMax.to(document.querySelector('aside'), 2, { opacity: 0, onComplete: () => {
-                    document.querySelector('aside').style.display = 'none'
-                }})
-                this.isFirst = false
-            }
-
-            this.trackManager.setTrackDuration(this.audio.duration)
+            this.trackManager.show(this.data[this.song])
         //}, false)
+
+        
 
         return false
     }
@@ -163,5 +162,15 @@ export class Player{
             
             this.trackManager.setTrackCurrentTime(this.audio.currentTime)
         }
+    }
+
+    next() {
+        this.song++
+        console.log(this.data)
+        if (this.song === this.data.length) {
+            this.song = 0
+        }
+        
+        this.loadSong()
     }
 }

@@ -1,38 +1,59 @@
 import { getPixiSprite, canvasSize } from '../../utils'
-
+import {TweenMax} from 'gsap'
 export default {
     createImageGrid(assets, container) {
-        this.assets = assets
+        this.assetsGrid = [...assets]
         this.container = container
-        this.used = []
-        this.sprites = []
+        this.objects = []
 
-        setInterval(this.create.bind(this), 6000)
+        this.interval = setInterval(this.create.bind(this), 6000)
         this.create()
     },
 
     create() {
-        if (this.used.length === this.assets.length) {
-            this.used = []
+        if (this.objects.length === this.assetsGrid.length) {
+            this.objects = []
         }
-        
+
         this.destroySprites()
 
         const assets = this.getRandomAssets()
-        this.used = this.used.concat(assets)
         
-        this.showAssets(assets)
-    },
-
-    showAssets(assets) {
+        
         assets.forEach(asset => {
-            const sprite = getPixiSprite(this.assets[asset])
-            this.resizeAndPosition(sprite, this.assets[asset])
-            this.sprites.push(sprite)
-            this.container.addChild(sprite)
-            sprite.xIndex = 19
+            const sp = getPixiSprite(this.assetsGrid[asset])
+
+            this.resizeAndPosition(sp.sprite, this.assetsGrid[asset])
+            
+            this.objects.push({
+                index: asset,
+                sprite: sp.sprite,
+                texture: sp.texture,
+                end: sp.isVideo ? false : true,
+            })
+            
+            this.container.addChild(sp.sprite)
+            sp.sprite.xIndex = 19
+            const rnd = Math.random()
+
+            if (rnd > 0.75) {
+                TweenMax.to(sp.sprite, 6, { x:sp.sprite.x - 100, y: sp.sprite.y - 100})
+            } else if (rnd > 0.5) {
+                TweenMax.to(sp.sprite, 6, { x:sp.sprite.x})
+            } else if (rnd > 0.25) {
+                TweenMax.to(sp.sprite, 6, { y:sp.sprite.y - 200})
+            } else {
+                TweenMax.to(sp.sprite, 6, { x:sp.sprite.x + 100, y:sp.sprite.y - 200})
+            }
+            
+
+            if (sp.isVideo) {
+                sp.object.index = asset
+            }
         })
     },
+
+    
 
     resizeAndPosition(sprite, media) {
         const { alto, ancho } = media
@@ -50,8 +71,13 @@ export default {
         sprite.x = x
         sprite.y = y
     },
+
     getRandomAssets() {
-        const total = Math.ceil(Math.random() * (this.assets.length - this.used.length))
+        let total = Math.ceil(Math.random() * 4)
+
+        if (total > 4){
+            total = 4
+        }
         
         if (total === 0) {
             return []
@@ -59,10 +85,12 @@ export default {
 
         const assets = []
         let i = 0
-
+        
         while (i < total) {
-            const some = Math.floor(Math.random() * this.assets.length)
-            if (this.used.indexOf(some) === -1) {
+            const some = Math.floor(Math.random() * this.assetsGrid.length)
+            const someAsset = this.objects.find(obj => obj.index === some)
+            
+            if (!someAsset) {
                 assets.push(some)
                 i++
             }
@@ -73,14 +101,20 @@ export default {
     },
 
     destroySprites() {
-        this.sprites.forEach(sprite => {
-            this.container.removeChild(sprite)
+        
+        if (!this.objects || !this.objects.length) return
+
+        this.objects.forEach((object, index) => {
+            this.container.removeChild(object.sprite)
+            object.texture.destroy(true)
         })
 
-        this.sprites = []
+        this.objects = []
+
     },
 
     destroyImageGrid() {
-        
+        clearInterval(this.interval)
+        this.destroySprites()
     }
 }

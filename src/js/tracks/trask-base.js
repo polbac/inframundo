@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js'
 import {TweenMax} from 'gsap'
-import { resizeCover, shuffle, center } from '../utils'
+import { resizeCover, shuffle, center, getPixiSprite, canvasSize } from '../utils'
 
 export default class TrackBase {
     constructor(data, pixi, container, name) {
@@ -13,8 +13,12 @@ export default class TrackBase {
         this.duration = 0
         this.currentInterval = 0
         this.randomBackgrounds = []
+        this.mounted = true
+        this.asserLayers = []
+        this.patternSprite = []
+        this.patternDirection_ = []
 
-        this.DEFAULT_TTL_RANDOM_BACKGROUND = 5000
+        this.DEFAULT_TTL_RANDOM_BACKGROUND = 10000
         
         this.setTitle()
         this.loadAssets()
@@ -53,16 +57,21 @@ export default class TrackBase {
     }
 
     setTitle() {
-        document.title = `NFRMN -- ${this.name}`
+        document.title = `INFRAMUNDO -- ${this.name}`
     }
 
     setBackground() {
         this.pixi.renderer.backgroundColor = parseInt(this.data.color_de_fondo.value.slice(1), 16)
     }
 
-    setRandomBackgrounds(randomBackgrounds) {
-        this.randomBackgrounds = shuffle(randomBackgrounds)
+    setRandomBackgrounds(randomBackgrounds, interval) {
+        this.interval = interval || this.DEFAULT_TTL_RANDOM_BACKGROUND
+        this.randomBackgrounds = shuffle([...randomBackgrounds])
         this.createRandomBackgrounds()
+    }
+
+    backgroundIn() {
+        TweenMax.from(this.backgroundVideoSprite, 30, { alpha: 0 })
     }
 
     createRandomBackgrounds() {
@@ -72,15 +81,21 @@ export default class TrackBase {
 
         this.currentRandomBackgroundIndex = -1
 
-        this.intervalRandomBackgrounds = setInterval(
-            this.changeRandomBackground.bind(this), 
-            this.DEFAULT_TTL_RANDOM_BACKGROUND
-        )
-
         this.changeRandomBackground()
     }
 
+    destroyAreas() {
+        this.mounted = false
+        document.querySelectorAll('video').forEach(video => {
+            video.src = null
+        })
+
+        clearInterval(this.intervalRandomBackgrounds)
+    }
+
     changeRandomBackground() {
+        
+        if (!this.mounted) return
         this.currentRandomBackgroundIndex++
 
         if (this.currentRandomBackgroundIndex === this.randomBackgrounds.length) {
@@ -121,7 +136,11 @@ export default class TrackBase {
     }
 
     checkInterval() {
+
+        
+
         const minute = this.currentTime / 60
+        console.log(minute)
 
         const currentArea = this.areas.reduce((prev, current) => {
             if (minute >= current.time ) {
@@ -140,6 +159,8 @@ export default class TrackBase {
             this.currentArea = currentArea
             currentArea.call()
         }
+
+        
     }
 
     setBackground(media) {
@@ -159,18 +180,21 @@ export default class TrackBase {
     setBackgroundVideo(media) {
         const file = media.asset.value.file ? media.asset.value.file.url : media.asset.value.image.url
         
-        const video = document.createElement("video");
-        video.crossOrigin = "anonymous"; 
-        video.preload = "auto";
-        video.loop = true;
-        video.volume = 0
-        video.src = file;
+        const video = videoCache(file)
+        
 
         this.backgroundVideoWidth = media.ancho.value
         this.backgroundVideoHeight =  media.alto.value
         this.backgroundVideoTexture = PIXI.Texture.from(video);
         
-        
+        if (this.randomBackgrounds.length > 1) {
+            const duration = this.backgroundVideoTexture.baseTexture.resource.source.duration *1000 || this.interval
+
+            this.intervalRandomBackgrounds = setTimeout(() => {
+                this.changeRandomBackground()
+            }, duration)
+        }
+
         this.backgroundVideoSprite = new PIXI.Sprite(this.backgroundVideoTexture);
         
         this.trackSprite.addChild(this.backgroundVideoSprite)
@@ -187,6 +211,10 @@ export default class TrackBase {
         
         this.trackSprite.addChild(this.backgroundSprite)
         this.resize()
+        
+        if (this.randomBackgrounds.length > 1) {   
+            this.intervalRandomBackgrounds = setTimeout(this.changeRandomBackground.bind(this), this.interval)
+        }
     }
 
     destroyBackground() {
@@ -206,6 +234,8 @@ export default class TrackBase {
     }
 
     resize() {
+        const canvas = canvasSize()
+
         if (this.backgroundVideoSprite) {
             resizeCover(this.backgroundVideoSprite, this.backgroundVideoWidth, this.backgroundVideoHeight)
         }
@@ -213,6 +243,128 @@ export default class TrackBase {
         if (this.backgroundSprite) {
             resizeCover(this.backgroundSprite, this.backgroundImageWidth, this.backgroundImageHeight)
         }
+
+        if (this.patternSprite) {
+            for (let index = 0; index < this.patternSprite.length; index++) {
+                const element = this.patternSprite[index];
+                if (element) {
+                   resizeCover(element, canvas.width, canvas.height)
+                }
+            }
+        }
+
         
     }
+
+    addAsset(index, asset) {
+        if (this.asserLayers[index]) {
+            this.trackSprite.removeChild(this.asserLayers[index])
+            this.asserLayers[index] = null
+        }
+
+        this.asserLayers[index] = getPixiSprite(asset)
+        this.trackSprite.addChild(this.asserLayers[index].sprite)
+        this.asserLayers[index].sprite.zIndex = index
+
+        this.resize()
+    }
+
+    getAsset(index) {
+        return this.asserLayers[index]
+    }
+
+    removeAssets() {
+        for (let index = 0; index < this.asserLayers.length; index++) {
+            const element = this.asserLayers[index];
+            if(element) this.trackSprite.removeChild(element.sprite)   
+        }
+        this.asserLayers = []
+    }
+
+    setPatternDirection(direction, index) {
+        this.patternDirection_[index] = direction
+    }
+
+    renderPattern() {
+        if (this.patternSprite) {
+            for (let index = 0; index < this.patternSprite.length; index++) {
+                const element = this.patternSprite[index];
+                const direction = this.patternDirection_[index];
+
+                if (element) {
+                    element.tilePosition.x += direction.x
+                    element.tilePosition.y += direction.y
+                }
+                
+            }
+            
+        }
+    }
+
+    createPattern(media, widthFrame, direction, zIndex) {
+        this.patternDirection_[zIndex] = direction
+
+        const file = media.asset.value.file ? media.asset.value.file.url : media.asset.value.image.url
+        
+        const img = new Image()
+        img.crossOrigin = 'anonymous'
+
+        img.onload = () => {
+            const width = media.ancho.value
+            const height =  media.alto.value
+
+            img.width = widthFrame
+            img.height = img.width * height/width
+            let patternTexture = PIXI.Texture.from(img)
+            patternTexture = new PIXI.Texture(patternTexture)
+            patternTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
+            let texRectangle = new PIXI.Rectangle(0, 0, img.width, img.height);
+            patternTexture.frame = texRectangle;
+            
+            this.patternSprite[zIndex] = new PIXI.TilingSprite(
+                patternTexture,
+            );
+            
+            /* this.patternSprite.uvMatrix.clampOffset = 10
+            this.patternSprite.uvMatrix.clampMargin = 10 */
+            this.container.addChild(this.patternSprite[zIndex])
+            this.patternSprite[zIndex].zIndex = zIndex
+            this.resize()
+
+        }
+        img.src = file
+        
+    }
+
+    destroyPattern() {
+        if (this.patternSprite) {
+            for (let index = 0; index < this.patternSprite.length; index++) {
+                const element = this.patternSprite[index];
+                if (element) {
+                    this.container.removeChild(element)
+                }
+                
+            }
+        }
+        this.patternSprite = []
+    }
+}
+
+const VIDEO_CACHE = {}
+
+const videoCache = (file) => {
+    /* if (VIDEO_CACHE[file]) {
+        return VIDEO_CACHE[file]
+    } */
+
+    const video = document.createElement("video");
+    video.crossOrigin = "anonymous"; 
+    video.preload = "auto";
+    video.loop = true;
+    video.volume = 0
+    video.src = file;
+
+    //VIDEO_CACHE[file] = video
+
+    return video
 }

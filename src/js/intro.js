@@ -18,7 +18,6 @@ export default class Intro{
     }
 
     draw() {
-        this.video = getPixiSpriteString('assets/intro.mp4')
         this.sprite = new PIXI.Container()
         this.sprite.interactive = true
         this.container.addChild(this.sprite)
@@ -36,6 +35,7 @@ export default class Intro{
             align : 'center'
         });
 
+        
         this.sprite.buttonMode = true
         this.sprite.cursor = 'pointer'
         this.sprite.defaultCursor = 'pointer';
@@ -62,5 +62,6 @@ export default class Intro{
 
         this.polbac.y = (canvasSize().height / 2 - this.polbac.height /2) - 60
         this.polbac.x = canvasSize().width / 2 - this.polbac.width /2
+
     }
 }

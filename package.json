@@ -23,6 +23,7 @@
     "gsap": "^3.5.1",
     "pixi-filters": "^3.1.1",
     "pixi.js": "5.3.2",
+    "pixi3d": "^0.9.1",
     "prismic-javascript": "^3.0.2"
   },
   "devDependencies": {

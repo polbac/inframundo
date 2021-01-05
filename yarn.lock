@@ -5899,6 +5899,11 @@ pixi.js@5.3.2:
     "@pixi/ticker" "5.3.2"
     "@pixi/utils" "5.3.2"
 
+pixi3d@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/pixi3d/-/pixi3d-0.9.1.tgz#3dbe294c5b74a512034fea7578e72a7d4fd30f99"
+  integrity sha512-4aArInhRzMGJgG1sPAGYataKW9xbcps+tPAzGPmF0JEc/uVZOuwLn8LUcqNpwQ2yo31ihZkA/GHQXHjsO5l0VQ==
+
 pkg-dir@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/pkg-dir/-/pkg-dir-3.0.0.tgz#2749020f239ed990881b1f71210d51eb6523bea3"

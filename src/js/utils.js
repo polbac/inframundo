@@ -56,6 +56,9 @@ function copyProperties(target, source) {
 
 export function getPixiSprite(media) {
     const file = media.asset.value.file ? media.asset.value.file.url : media.asset.value.image.url
+    const width = media.ancho.value
+    const height = media.alto.value
+    const res = width / height
     const isVideo = file.search('.mp4') !== -1
 
     if (isVideo) {        
@@ -67,12 +70,31 @@ export function getPixiSprite(media) {
         video.src = file;
         
         const texture = PIXI.Texture.from(video);    
-        return new PIXI.Sprite(texture);
+
+        return {
+            sprite: new PIXI.Sprite(texture),
+            object: video,
+            texture,
+            isVideo: true,
+            media,
+            width,
+            height,
+            res
+        };
     }
 
     const texture = PIXI.Texture.from(file);
 
-    return new PIXI.Sprite(texture);
+    return {
+        sprite: new PIXI.Sprite(texture),
+        texture,
+        object: null,
+        isVideo: false,
+        media,
+        width,
+        height,
+        res
+    };
     
 }
 

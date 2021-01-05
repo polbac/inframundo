@@ -1,4 +1,6 @@
 import Track_ from './_/track'
+import TrackDown from './down/track'
+import TrackInframundo from './inframundo/track'
 
 
 export default class TrackManager {
@@ -8,25 +10,56 @@ export default class TrackManager {
         this.prismic = prismic
         this.last = null
         this.current = null
+        this.currentIndex = 0
         this.tracks = {
-            '_': Track_
+            'X7lHTBIAACEADoXz':Track_,
+            'X-MzjRAAACUAZGBh': TrackDown,
+            'X-pNGxAAACMAg9PJ': TrackInframundo,
         }
     }
 
-    show(slug) {
-        const temporal = new this.tracks[slug](
-            prismic.getTrackData(slug),
+    render() {
+        if (this.current) {
+            if (this.current.render) {
+                this.current.render()
+            }   
+        }
+    }
+
+    next() {
+    
+    }
+
+    showIndex(index) {
+        this.show(this.tracks[index], index)
+    }
+
+    show(d) {
+
+        if (this.current) {
+            this.current.destroy()
+                .then(() => {
+                    this.current = null
+                    const temporal = new this.tracks[d.id](
+                        prismic.getTrackData(d.id),
+                        this.pixi,
+                        this.container
+                    )
+                    this.current = temporal
+                    this.current.start()
+                })
+            return
+        }
+
+        const temporal = new this.tracks[d.id](
+            prismic.getTrackData(d.id),
             this.pixi,
             this.container
         )
 
-        if (this.current) {
-            this.current.destroy()
-                .then(() => this.current = temporal)
-            return
-        }
-
         this.current = temporal
+        this.current.start()
+        
     }
 
     getColors() {
@@ -44,5 +77,9 @@ export default class TrackManager {
 
     setTrackCurrentTime(currentTime) {
         this.current.setCurrentTime(currentTime)
+    }
+
+    resize() {
+        if (this.current.resize) this.current.resize()
     }
 }

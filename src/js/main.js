@@ -5,6 +5,7 @@ import prismic from './repository/prismic'
 import TrackManager from './tracks/track-manager';
 import Intro from './intro';
 import {TweenMax} from 'gsap'
+import Credits from './credits'
 
 let player
 let trackManager
@@ -21,31 +22,42 @@ prismic.config()
       resolution: window.devicePixelRatio || 1,
       antialias: true,
     });
-
-    
-
     
     const container = new PIXI.Container()
     container.sortableChildren = true
     pixi.stage.addChild(container)
+    pixi.renderer.autoResize = true;
     
     let intro = new Intro(pixi, container)
     
     trackManager = new TrackManager(pixi, prismic, container)
 
     intro.sprite.on('click', () => {
-      intro.destroy()
-      intro = null
-      trackManager.show('_')
-      player.loadSong()
+      TweenMax.to(intro.sprite, 1, {y: -15, alpha:0, onComplete: () => {
+        intro.destroy()
+        intro = null
+
+        player.loadSong()
+        container.interactive = true
+        container.on('click', () => {
+            player.next()
+        })
+    }})
     });
 
     player = new Player(pixi.stage, prismic, trackManager, container);
+    
+    new Credits(pixi.stage, container);
 
-    pixi.ticker.add((delta) => {
+    pixi.ticker.add(() => {
       player.render()
+
       if (intro) {
         intro.render()
+      }
+
+      if (trackManager) {
+        trackManager.render()
       }
     });
 
@@ -54,20 +66,17 @@ prismic.config()
     var renderer = PIXI.autoDetectRenderer(size[0], size[1], null);
 
     function resize() {
-      if (window.innerWidth / window.innerHeight >= ratio) {
-          var w = window.innerHeight * ratio;
-          var h = window.innerHeight;
-      } else {
-          var w = window.innerWidth;
-          var h = window.innerWidth / ratio;
+      pixi.renderer.resize(window.innerWidth,window.innerHeight )
+      
+      if (trackManager) {
+        trackManager.resize()
       }
-      renderer.view.style.width = w + 'px';
-      renderer.view.style.height = h + 'px';
 
       if (intro) {
         intro.resize()
       }
   }
+
   window.onresize = resize;
 })
 

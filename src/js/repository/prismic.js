@@ -19,8 +19,8 @@ class PrismicManager {
         }) 
     }
 
-    getTrackData(slug) {
-        return this.data.results.find(track => track.slugs[0] === slug)
+    getTrackData(id) {
+        return this.data.results.find(t => t.id === id)
     }
 
 }
