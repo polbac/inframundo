@@ -93,6 +93,7 @@ export class Player{
         //this.audio.addEventListener('canplaythrough', () => {
             this.loading = false
             this.audio.play()
+            //this.audio.currentTime = 131
             this.trackManager.show(this.data[this.song])
         //}, false)
 
@@ -159,7 +160,6 @@ export class Player{
             this.graphicsBackground.beginFill(0xff0000);
             this.graphicsBackground.drawRect(0, height - square, (width * this.getAudioPlayingPercent()) / 100, square);
             this.graphicsBackground.endFill() */
-            
             this.trackManager.setTrackCurrentTime(this.audio.currentTime)
         }
     }

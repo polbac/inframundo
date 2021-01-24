@@ -140,8 +140,7 @@ export default class TrackBase {
         
 
         const minute = this.currentTime / 60
-        console.log(minute)
-
+/* s */console.log(minute)
         const currentArea = this.areas.reduce((prev, current) => {
             if (minute >= current.time ) {
                 return current
@@ -271,6 +270,15 @@ export default class TrackBase {
 
     getAsset(index) {
         return this.asserLayers[index]
+    }
+
+    removeAsset(index) {
+        const element = this.asserLayers[index];
+        console.log(element)
+        if(element) {
+            this.trackSprite.removeChild(element.sprite)   
+            this.asserLayers[index] = null
+        }
     }
 
     removeAssets() {

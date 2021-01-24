@@ -56,7 +56,7 @@ export default class Inframundo extends TrackBase{
             { time: 3.58, call: this.patternDirection4({x: 1, y: 1}).bind(this) },
             { time: 3.65, call: this.patternDirection5({x: -1, y: 2}).bind(this) },
             { time: 3.75, call: this.patternDirection5({x: -1, y: 0}).bind(this) },
-            { time: 4.05, call: this.videoEnd0.bind(this) },
+            { time: 4.02, call: this.videoEnd0.bind(this) },
             { time: 4.07, call: this.videoEnd.bind(this) },
             { time: 4.27, call: this.end.bind(this) },
         ])
