@@ -2,6 +2,7 @@ import Track_ from './_/track'
 import TrackDown from './down/track'
 import TrackInframundo from './inframundo/track'
 import TrackRitmo from './ritmo/track'
+import TrackXilbaba from './xilbaba/track'
 
 
 export default class TrackManager {
@@ -17,6 +18,7 @@ export default class TrackManager {
             'X-MzjRAAACUAZGBh': TrackDown,
             'X-pNGxAAACMAg9PJ': TrackInframundo,
             'YAxz5hUAACQASaT7': TrackRitmo,
+            'YA4UVBUAACUAUNOd': TrackXilbaba,
         }
     }
 
