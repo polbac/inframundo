@@ -18,7 +18,7 @@ export default class Inframundo extends TrackBase{
         this.container = container
         this.color1 = 0xfff
         this.color2 = 0xfff
-        
+        this.trackSprite.zIndex = 0
     }
 
     start() {

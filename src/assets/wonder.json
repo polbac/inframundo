@@ -1,0 +1,31 @@
+{"frames": {
+
+"klipartz-0.png":
+{
+	"frame": {"x":1,"y":1,"w":121,"h":218},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":41,"y":16,"w":121,"h":218},
+	"sourceSize": {"w":228,"h":236}
+},
+"klipartz-1.png":
+{
+	"frame": {"x":1,"y":221,"w":121,"h":218},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":65,"y":16,"w":121,"h":218},
+	"sourceSize": {"w":228,"h":236}
+}},
+"animations": {
+	"klipartz": ["klipartz-0.png","klipartz-1.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "wonder.png",
+	"format": "RGBA8888",
+	"size": {"w":123,"h":440},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:3c3c95d1f771fca46d77a6a8c35010bd:39e58d333f29f7ddaeb022499bb6ab37:795588582043c07ff61684c7fd98914e$"
+}
+}

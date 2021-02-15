@@ -2,6 +2,8 @@ import * as PIXI from 'pixi.js'
 import { TweenMax } from 'gsap/all'
 import { canvasSize } from './utils'
 
+
+
 const SIZE = 700
 const INSISE_SIZE = SIZE * 0.7
 const TOTAL_SONGS = 5
@@ -35,7 +37,7 @@ export class Player{
         this.audio = new Audio()
         this.audio.onended = this.endAudio.bind(this)
         //this.audio.volume = 0
-        this.song = 0
+        this.song = 3
         this.playing = false
         this.percent = 0
         this.stage = stage
@@ -93,7 +95,7 @@ export class Player{
         //this.audio.addEventListener('canplaythrough', () => {
             this.loading = false
             this.audio.play()
-            //this.audio.currentTime = 131
+            /* this.audio.currentTime = 165 */
             this.trackManager.show(this.data[this.song])
         //}, false)
 

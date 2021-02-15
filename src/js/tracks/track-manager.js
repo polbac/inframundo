@@ -3,6 +3,7 @@ import TrackDown from './down/track'
 import TrackInframundo from './inframundo/track'
 import TrackRitmo from './ritmo/track'
 import TrackXilbaba from './xilbaba/track'
+import TrackHigher from './higher/track'
 
 
 export default class TrackManager {
@@ -13,12 +14,14 @@ export default class TrackManager {
         this.last = null
         this.current = null
         this.currentIndex = 0
+
         this.tracks = {
-            'X7lHTBIAACEADoXz':Track_,
+            'X7lHTBIAACEADoXz': Track_,
             'X-MzjRAAACUAZGBh': TrackDown,
             'X-pNGxAAACMAg9PJ': TrackInframundo,
             'YAxz5hUAACQASaT7': TrackRitmo,
             'YA4UVBUAACUAUNOd': TrackXilbaba,
+            'YCP5CBUAACMAsdV0': TrackHigher,
         }
     }
 

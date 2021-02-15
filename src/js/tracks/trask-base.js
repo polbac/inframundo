@@ -9,6 +9,7 @@ export default class TrackBase {
         this.assets = this.data.assets.value
         this.pixi = pixi
         this.container = container
+        this.container.sortableChildren = true
         this.currentTime = 0
         this.duration = 0
         this.currentInterval = 0
@@ -136,11 +137,8 @@ export default class TrackBase {
     }
 
     checkInterval() {
-
-        
-
         const minute = this.currentTime / 60
-/* s */console.log(minute)
+        /* console.log(minute) */
         const currentArea = this.areas.reduce((prev, current) => {
             if (minute >= current.time ) {
                 return current
@@ -274,7 +272,7 @@ export default class TrackBase {
 
     removeAsset(index) {
         const element = this.asserLayers[index];
-        console.log(element)
+        
         if(element) {
             this.trackSprite.removeChild(element.sprite)   
             this.asserLayers[index] = null
@@ -336,7 +334,9 @@ export default class TrackBase {
             /* this.patternSprite.uvMatrix.clampOffset = 10
             this.patternSprite.uvMatrix.clampMargin = 10 */
             this.container.addChild(this.patternSprite[zIndex])
+            this.patternSprite[zIndex].sortableChildren = true
             this.patternSprite[zIndex].zIndex = zIndex
+
             this.resize()
 
         }
