@@ -8,8 +8,8 @@ const LAYOUT_START = 'layoutStart'
 
 
 export default class Track_ extends TrackBase{
-    constructor(data, pixi, container) {
-        super(data, pixi, container, 'deep in the underscore')
+    constructor(data, pixi, container, shape) {
+        super(data, pixi, container, 'deep in the underscore', shape)
 
         this.layout = LAYOUT_START
         this.data = data

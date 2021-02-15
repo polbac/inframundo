@@ -3,7 +3,8 @@ import {TweenMax} from 'gsap'
 import { resizeCover, shuffle, center, getPixiSprite, canvasSize } from '../utils'
 
 export default class TrackBase {
-    constructor(data, pixi, container, name) {
+    constructor(data, pixi, container, name, shape) {
+        console.log('shape,', shape)
         this.data =  data.data.track
         this.name =  name
         this.assets = this.data.assets.value
@@ -18,6 +19,7 @@ export default class TrackBase {
         this.asserLayers = []
         this.patternSprite = []
         this.patternDirection_ = []
+        this.shape = shape
 
         this.DEFAULT_TTL_RANDOM_BACKGROUND = 10000
         
@@ -44,8 +46,14 @@ export default class TrackBase {
         this.text.zIndex = 999
         center(this.text)
 
+        this.shape.show()
+
         TweenMax.from(this.text, 2, { alpha: 0, y: this.text.y })
-        TweenMax.to(this.text, 2, { alpha: 0, delay: 3 })
+        TweenMax.to(this.text, 2, { alpha: 0, delay: 3, onComplete: () => {
+            this.shape.hide()
+        }})
+        
+
     }
 
     getAssets() {

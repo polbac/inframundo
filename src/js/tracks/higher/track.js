@@ -12,8 +12,8 @@ const LAYOUT_START = 'layoutStart'
 
 
 export default class Higher extends TrackBase{
-    constructor(data, pixi, container) {
-        super(data, pixi, container, 'higher')
+    constructor(data, pixi, container, shape) {
+        super(data, pixi, container, 'higher', shape)
 
         this.layout = LAYOUT_START
         this.data = data
@@ -27,6 +27,7 @@ export default class Higher extends TrackBase{
         this.counter = 0
 
         this.trackSprite.zIndex = 10
+        this.isActive = true
     }
 
     start() {
@@ -209,12 +210,14 @@ export default class Higher extends TrackBase{
     }
 
     fire() {
-
+        if (!this.isActive) return
         PIXI.Loader.shared
             .add('fire', '/assets/fire.json')
             .add('king', '/assets/king.json')
             .add('wonder', '/assets/wonder.json')
             .load((loader, resources) => {
+                if (!this.isActive) return
+
                 this.resources = resources
                 if (resources.fire && !this.animatedFire) {
                     this.animatedFire = new PIXI.AnimatedSprite(resources.fire.spritesheet.animations["fire8_64"]);
@@ -383,6 +386,17 @@ export default class Higher extends TrackBase{
     }
     
     destroy() {
+
+        if (this.animatedWonder){
+            clearTimeout(this.wonderTimeout)
+            TweenMax.killTweensOf(this.animatedWonder)
+            this.animatedWonder.stop()
+            this.container.removeChild(this.animatedWonder)
+            this.animatedWonder.destroy()
+            this.animatedWonder = null
+        }
+
+        this.isActive = false
         this.destroyFire()
         this.container.filters = []
         this.destroyPattern()

@@ -9,8 +9,8 @@ const LAYOUT_START = 'layoutStart'
 
 
 export default class TrackDown extends TrackBase{
-    constructor(data, pixi, container) {
-        super(data, pixi, container, 'down')
+    constructor(data, pixi, container, shape) {
+        super(data, pixi, container, 'down', shape)
 
         this.layout = LAYOUT_START
         this.data = data

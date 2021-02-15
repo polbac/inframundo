@@ -10,7 +10,7 @@ const LAYOUT_START = 'layoutStart'
 
 export default class Ritmo extends TrackBase{
     constructor(data, pixi, container, shape) {
-        super(data, pixi, container, 'xilbaba', shape)
+        super(data, pixi, container, 'workout', shape)
 
         this.layout = LAYOUT_START
         this.data = data
@@ -26,26 +26,23 @@ export default class Ritmo extends TrackBase{
     start() {
         this.setAreas([
             { time: 0, call: this.init.bind(this) },
+            { time: 1.15, call: this.end.bind(this) },
         ])
-        TweenMax.set(this.container, { alpha: 0 })
-        TweenMax.to(this.container, 1, { alpha: 1 })
-
         const assets = this.getAssets()
-        
-        this.addAsset(999, assets[1])
-        
-        this.getAsset(999).sprite.width = 400
-        this.getAsset(999).sprite.height = this.getAsset(999).sprite.width / this.getAsset(999).res
-        this.getAsset(999).sprite.x = 900
-        this.getAsset(999).sprite.y = 200
+        TweenMax.set(this.container, { alpha: 1 })
 
         this.setRandomBackgrounds([
             assets[0],
         ], 500)
+
     }
     
     init() {
 
+    }
+
+    end() {
+        TweenMax.to(this.container, 3, { alpha: 0 })
     }
     
     destroy() {

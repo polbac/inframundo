@@ -4,18 +4,23 @@ import TrackInframundo from './inframundo/track'
 import TrackRitmo from './ritmo/track'
 import TrackXilbaba from './xilbaba/track'
 import TrackHigher from './higher/track'
+import TrackLaLlamada from './la-llamada/track'
+import TrackWorkout from './workout/track'
 
 
 export default class TrackManager {
-    constructor(pixi, prismic, container) {
+    constructor(pixi, prismic, container, shapes) {
         this.pixi = pixi
         this.container = container
         this.prismic = prismic
         this.last = null
         this.current = null
         this.currentIndex = 0
+        this.shapes = shapes
 
         this.tracks = {
+            'YCq0nxIAACAAY79Z': TrackWorkout,
+            'YCqcMxIAACEAY1Oy': TrackLaLlamada,
             'X7lHTBIAACEADoXz': Track_,
             'X-MzjRAAACUAZGBh': TrackDown,
             'X-pNGxAAACMAg9PJ': TrackInframundo,
@@ -50,7 +55,8 @@ export default class TrackManager {
                     const temporal = new this.tracks[d.id](
                         prismic.getTrackData(d.id),
                         this.pixi,
-                        this.container
+                        this.container,
+                        this.shapes
                     )
                     this.current = temporal
                     this.current.start()
@@ -61,7 +67,8 @@ export default class TrackManager {
         const temporal = new this.tracks[d.id](
             prismic.getTrackData(d.id),
             this.pixi,
-            this.container
+            this.container,
+            this.shapes
         )
 
         this.current = temporal

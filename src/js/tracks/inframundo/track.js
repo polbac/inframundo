@@ -9,8 +9,8 @@ const LAYOUT_START = 'layoutStart'
 
 
 export default class Inframundo extends TrackBase{
-    constructor(data, pixi, container) {
-        super(data, pixi, container, 'inframundo')
+    constructor(data, pixi, container, shape) {
+        super(data, pixi, container, 'inframundo', shape)
 
         this.layout = LAYOUT_START
         this.data = data

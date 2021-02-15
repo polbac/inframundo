@@ -55,7 +55,16 @@ function copyProperties(target, source) {
 }
 
 export function getPixiSprite(media) {
-    const file = media.asset.value.file ? media.asset.value.file.url : media.asset.value.image.url
+    let file = media.asset.value.file && media.asset.value.file.url
+
+    if (!file) {
+        file = media.asset.value.image && media.asset.value.image.url
+    }
+
+    if (!file) {
+        file = media.asset.value.main && media.asset.value.main.url
+    }
+        
     const width = media.ancho.value
     const height = media.alto.value
     const res = width / height

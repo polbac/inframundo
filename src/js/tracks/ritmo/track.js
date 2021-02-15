@@ -9,8 +9,8 @@ const LAYOUT_START = 'layoutStart'
 
 
 export default class Ritmo extends TrackBase{
-    constructor(data, pixi, container) {
-        super(data, pixi, container, 'ritmo')
+    constructor(data, pixi, container, shape) {
+        super(data, pixi, container, 'ritmo', shape)
 
         this.layout = LAYOUT_START
         this.data = data

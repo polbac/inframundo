@@ -11,8 +11,11 @@ class PrismicManager {
                 return api.query("");
             }).then((response) => {
                 console.log("Track assets loaded: ", response.results);
-                this.data = response
-                resolve()
+                this.data = {
+                    ...response,
+                    results: response.results.filter(r => r.type === 'track')
+                }
+                resolve(response.results.filter(r => r.type === 'shapes'))
             }, function(err) {
                 reject()
             });

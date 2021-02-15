@@ -6,6 +6,7 @@ import TrackManager from './tracks/track-manager';
 import Intro from './intro';
 import {TweenMax} from 'gsap'
 import Credits from './credits'
+import Shapes from './shapes'
 
 let player
 let trackManager
@@ -24,13 +25,16 @@ prismic.config()
     });
     
     const container = new PIXI.Container()
+    const shapesContainer = new PIXI.Container()
+    const shapes = new Shapes(shapesContainer, res)
     container.sortableChildren = true
     pixi.stage.addChild(container)
+    pixi.stage.addChild(shapesContainer)
     pixi.renderer.autoResize = true;
     
     let intro = new Intro(pixi, container)
     
-    trackManager = new TrackManager(pixi, prismic, container)
+    trackManager = new TrackManager(pixi, prismic, container, shapes)
 
     intro.sprite.on('click', () => {
       TweenMax.to(intro.sprite, 1, {y: -15, alpha:0, onComplete: () => {
@@ -51,6 +55,7 @@ prismic.config()
 
     pixi.ticker.add(() => {
       player.render()
+      shapes.render()
 
       if (intro) {
         intro.render()

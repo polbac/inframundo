@@ -1,6 +1,5 @@
 import * as PIXI from 'pixi.js'
 import { canvasSize, getPixiSpriteString } from './utils'
-import {ReflectionFilter} from '@pixi/filter-reflection';
 
 
 
