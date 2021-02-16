@@ -94,6 +94,6 @@ export default class TrackManager {
     }
 
     resize() {
-        if (this.current.resize) this.current.resize()
+        if (this.current && this.current.resize) this.current.resize()
     }
 }

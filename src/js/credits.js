@@ -9,7 +9,7 @@ export default class Credits{
         this.container = container
         this.created = false
 
-        document.getElementById("credits").onclick =  this.show.bind(this)
+        //document.getElementById("credits").onclick =  this.show.bind(this)
         
     }
 
