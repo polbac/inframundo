@@ -36,7 +36,7 @@ prismic.config()
     
     trackManager = new TrackManager(pixi, prismic, container, shapes)
 
-    intro.sprite.on('click', () => {
+    intro.enterSprite.on('click', () => {
       TweenMax.to(intro.sprite, 1, {y: -15, alpha:0, onComplete: () => {
         intro.destroy()
         intro = null
