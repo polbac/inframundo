@@ -62,16 +62,29 @@ export default class Intro{
             this.resize()
         }
         image.src = path
+        
 
         this.sprite.addChild(this.inframundoSprite)
         this.filter = new ReflectionFilter()
         
         this.inframundoSprite.filters = [this.filter]
-        this.filter.waveLength = [15, 5]
+        this.filter.waveLength = [25, 25]
         this.filter.alpha = [1, 1]
-        this.filter.boundary = 0.66
+        this.filter.boundary = 0.56
         this.filter.mirror = false
         this.resize()
+
+        this.enterSprite.on('mouseover', () => {
+            TweenMax.killTweensOf(this.filter)
+            TweenMax.to(this.filter, 5, { boundary:0.26})
+            window.noise.mouseIn()
+        })
+
+        this.enterSprite.on('mouseout', () => {
+            TweenMax.killTweensOf(this.filter)
+            TweenMax.to(this.filter, 5, { boundary:0.66})
+            window.noise.mouseOut()
+        })
     }
 
     render() {

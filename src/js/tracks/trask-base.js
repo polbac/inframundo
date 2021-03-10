@@ -25,7 +25,6 @@ export default class TrackBase {
         
         this.setTitle()
         this.loadAssets()
-            
         
         this.trackSprite = new PIXI.Container();
         this.trackSprite.sortableChildren = true;
@@ -44,12 +43,16 @@ export default class TrackBase {
         });
         this.trackSprite.addChild(this.text)
         this.text.zIndex = 999
+
+        document.querySelector('.legend').classList.remove('none')
+        
         center(this.text)
 
         this.shape.show()
 
         TweenMax.from(this.text, 2, { alpha: 0, y: this.text.y })
         TweenMax.to(this.text, 2, { alpha: 0, delay: 3, onComplete: () => {
+            document.querySelector('.legend').classList.add('none')
             this.shape.hide()
         }})
         

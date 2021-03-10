@@ -37,11 +37,26 @@ export class Player{
         this.audio = new Audio()
         this.audio.onended = this.endAudio.bind(this)
         //this.audio.volume = 0
-        this.song = 3
+        this.song = 0
         this.playing = false
         this.percent = 0
         this.stage = stage
-        this.data = prismic.data.results
+        this.data = []
+        const orderTracks = Object.keys(trackManager.tracks).sort(function (a, b) {
+            if (a.order > b.order) {
+              return 1;
+            }
+            if (a.order < b.order) {
+              return -1;
+            }
+            // a must be equal to b
+            return 0;
+          })
+
+          
+         orderTracks.forEach(_track => {
+            this.data.push(prismic.data.results.find(t => _track === t.id))
+        })
         this.playerSprite = new PIXI.Sprite();
         this.graphicsBackground = new PIXI.Graphics();
         this.graphics = new PIXI.Graphics();
@@ -106,7 +121,7 @@ export class Player{
 
     tooglePlay() {
         if (this.play) {
-            this.audio.pause()
+            this.audio.pause()  
         } else {
             this.audio.play()
         }
@@ -168,7 +183,7 @@ export class Player{
 
     next() {
         this.song++
-        console.log(this.data)
+
         if (this.song === this.data.length) {
             this.song = 0
         }

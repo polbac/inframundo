@@ -66,21 +66,21 @@ export default class TrackDown extends TrackBase{
     resizeAssets() {
         const canvas = canvasSize()
     
-        this.sprite2.width = canvas.width 
-        this.sprite2.height = canvas.height 
+        this.sprite2.width = canvas.width * 2
+        this.sprite2.height = canvas.height  * 2
 
-        this.sprite2.x = canvas.width / 2 - this.sprite2.width / 2
-        this.sprite2.y = canvas.height / 2 - this.sprite2.height / 2
+        
 
-        this.sprite1.width = canvas.width 
-        this.sprite1.height = canvas.height 
+        this.sprite1.width = canvas.width  * 2
+        this.sprite1.height = canvas.height  * 2
 
-        this.sprite1.x = canvas.width / 2 - this.sprite1.width / 2
-        this.sprite1.y = canvas.height / 2 - this.sprite1.height / 2
+        
     }
 
     render() {
         const canvas = canvasSize()
+        const { x, y } = this.pixi.renderer.plugins.interaction.mouse.global
+
         if (this.filter1) {
             this.filter1.angle = 10
             this.filter1.radius += 0.5
@@ -91,6 +91,12 @@ export default class TrackDown extends TrackBase{
             this.filter2.radius += 0.5
             this.filter2.offset = new PIXI.Point(canvas.width/2, canvas.height/2)
         }
+
+        this.sprite1.x = x - this.sprite1.width / 2
+        this.sprite1.y = y - this.sprite1.height / 2
+
+        this.sprite2.x = x - this.sprite2.width / 2
+        this.sprite2.y = y - this.sprite2.height / 2
     }
 
     middle() {

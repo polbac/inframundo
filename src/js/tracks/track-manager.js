@@ -19,14 +19,17 @@ export default class TrackManager {
         this.shapes = shapes
 
         this.tracks = {
-            'YCq0nxIAACAAY79Z': TrackWorkout,
-            'YCqcMxIAACEAY1Oy': TrackLaLlamada,
-            'X7lHTBIAACEADoXz': Track_,
-            'X-MzjRAAACUAZGBh': TrackDown,
-            'X-pNGxAAACMAg9PJ': TrackInframundo,
-            'YAxz5hUAACQASaT7': TrackRitmo,
-            'YA4UVBUAACUAUNOd': TrackXilbaba,
-            'YCP5CBUAACMAsdV0': TrackHigher,
+            'X7lHTBIAACEADoXz': {c: Track_, order: 0},
+            'X-pNGxAAACMAg9PJ': {c: TrackInframundo, order: 1},
+            'YCq0nxIAACAAY79Z': {c: TrackWorkout, order: 2},
+            'YCP5CBUAACMAsdV0': {c: TrackHigher, order: 3},
+            'YCqcMxIAACEAY1Oy': {c: TrackLaLlamada, order: 4},
+            
+            'X-MzjRAAACUAZGBh': {c: TrackDown, order: 5},
+            
+            'YAxz5hUAACQASaT7': {c: TrackRitmo, order: 6},
+            'YA4UVBUAACUAUNOd': {c: TrackXilbaba, order: 7},
+            
         }
     }
 
@@ -43,7 +46,7 @@ export default class TrackManager {
     }
 
     showIndex(index) {
-        this.show(this.tracks[index], index)
+        this.show(this.tracks[index].c, index)
     }
 
     show(d) {
@@ -52,7 +55,7 @@ export default class TrackManager {
             this.current.destroy()
                 .then(() => {
                     this.current = null
-                    const temporal = new this.tracks[d.id](
+                    const temporal = new this.tracks[d.id].c(
                         prismic.getTrackData(d.id),
                         this.pixi,
                         this.container,
@@ -64,7 +67,7 @@ export default class TrackManager {
             return
         }
 
-        const temporal = new this.tracks[d.id](
+        const temporal = new this.tracks[d.id].c(
             prismic.getTrackData(d.id),
             this.pixi,
             this.container,

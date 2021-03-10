@@ -32,12 +32,7 @@ export default class Ritmo extends TrackBase{
 
         const assets = this.getAssets()
         
-        this.addAsset(999, assets[1])
         
-        this.getAsset(999).sprite.width = 400
-        this.getAsset(999).sprite.height = this.getAsset(999).sprite.width / this.getAsset(999).res
-        this.getAsset(999).sprite.x = 900
-        this.getAsset(999).sprite.y = 200
 
         this.setRandomBackgrounds([
             assets[0],
