@@ -120,7 +120,7 @@ prismic.config()
     }})
     });
 
-    player = new Player(pixi.stage, prismic, trackManager, container);
+    player = new Player(pixi.stage, prismic, trackManager, container, pixi);
     
     new Credits(pixi.stage, container);
 

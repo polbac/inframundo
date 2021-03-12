@@ -367,6 +367,16 @@ export default class TrackBase {
         }
         this.patternSprite = []
     }
+
+    destroyBase() {
+        this.destroyAreas()
+        this.removeAssets()
+        this.destroyBackground()
+        this.destroyPattern()
+        clearInterval(this.intervalRandomBackgrounds)
+        clearTimeout(this.intervalRandomBackgrounds)
+        TweenMax.killTweensOf(this.text)
+    }
 }
 
 const VIDEO_CACHE = {}

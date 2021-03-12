@@ -52,6 +52,7 @@ export default class TrackManager {
     show(d) {
 
         if (this.current) {
+            this.current.destroyBase()
             this.current.destroy()
                 .then(() => {
                     this.current = null

@@ -27,9 +27,10 @@ const triangule = [
 
 
 export class Player{
-    constructor(stage, prismic, trackManager, container) {
+    constructor(stage, prismic, trackManager, container, pixi) {
         this.trackManager = trackManager
         this.trackNumber = 0
+        this.pixi = pixi
         this.color1 = null
         this.color2 = null
         this.isFirst = true
@@ -42,6 +43,25 @@ export class Player{
         this.percent = 0
         this.stage = stage
         this.data = []
+
+        
+
+        window.onfocus = () => {
+            if (!this.playing && !this.loading) {
+                this.pixi.start()
+                this.audio.play()
+                this.playing = true
+            }
+            
+        };
+        window.onblur =  () => {
+            if (this.playing) {
+                this.pixi.stop()
+                this.audio.pause()
+                this.playing = false
+            }
+        };
+
         const orderTracks = Object.keys(trackManager.tracks).sort(function (a, b) {
             if (a.order > b.order) {
               return 1;
@@ -110,6 +130,7 @@ export class Player{
         //this.audio.addEventListener('canplaythrough', () => {
             this.loading = false
             this.audio.play()
+            this.playing = true
             /* this.audio.currentTime = 165 */
             this.trackManager.show(this.data[this.song])
         //}, false)
@@ -120,13 +141,15 @@ export class Player{
     }
 
     tooglePlay() {
-        if (this.play) {
+        if (this.playing) {
+            this.playing = false
             this.audio.pause()  
         } else {
+            this.playing = true
             this.audio.play()
         }
 
-        this.playing = !this.playing
+        
         this.draw()
         this.percent = 0   
     }
