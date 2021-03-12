@@ -47,8 +47,7 @@ prismic.config()
     document.fonts.ready.then(function () {
       TweenMax.to(intro.sprite, 3, { alpha: 1})
     });
-
-    intro.enterSprite.on('click', () => {
+    const clickEvent = () => {
       Noise.stop()
       const body = document.querySelector('body')
 
@@ -118,7 +117,8 @@ prismic.config()
 
         document.querySelector('#next-song').style.display = 'block'
     }})
-    });
+    }
+    intro.enterSprite.on('click', clickEvent);
 
     player = new Player(pixi.stage, prismic, trackManager, container, pixi);
     

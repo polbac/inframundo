@@ -23,6 +23,7 @@ export default class Credits{
         this.container.addChild(this.sprite)
         this.sprite.interactive = true
         this.sprite.on('click', this.destroy.bind(this))
+        this.sprite.on('pointerdown', this.destroy.bind(this))
 
         this.title = new PIXI.Text('A B O U T',{
             fontFamily : 'UnifrakturCook', 
