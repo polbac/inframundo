@@ -2,7 +2,7 @@ import { GlowFilter } from 'pixi-filters'
 import TrackBase from '../trask-base'
 import { canvasSize, getPixiSprite } from '../../utils'
 import {TweenMax} from 'gsap'
-import * as PIXI from 'pixi.js'
+import * as PIXI from 'pixi.js-legacy'
 
 const LAYOUT_START = 'layoutStart'
 
@@ -10,7 +10,7 @@ const LAYOUT_START = 'layoutStart'
 
 export default class Ritmo extends TrackBase{
     constructor(data, pixi, container, shape) {
-        super(data, pixi, container, 'xilbaba', shape)
+        super(data, pixi, container, 'xlbaba', shape)
 
         this.layout = LAYOUT_START
         this.data = data

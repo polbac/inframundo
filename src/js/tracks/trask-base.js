@@ -1,4 +1,4 @@
-import * as PIXI from 'pixi.js'
+import * as PIXI from 'pixi.js-legacy'
 import {TweenMax} from 'gsap'
 import { resizeCover, shuffle, center, getPixiSprite, canvasSize } from '../utils'
 
@@ -32,6 +32,8 @@ export default class TrackBase {
         this.container.addChild(this.trackSprite)
         
         this.showName()
+
+        pixi.stage.filters = []
     }
 
     showName() {
@@ -226,6 +228,10 @@ export default class TrackBase {
     }
 
     destroyBackground() {
+        if (this.intervalRandomBackgrounds) {
+            clearTimeout(this.intervalRandomBackgrounds)
+        }
+
         if (this.backgroundVideoSprite) {
             this.trackSprite.removeChild(this.backgroundVideoSprite)
             this.backgroundVideoSprite = null
@@ -243,6 +249,11 @@ export default class TrackBase {
 
     resize() {
         const canvas = canvasSize()
+
+        if (this.inframundoSprite) {
+            this.inframundoSprite.x = canvasSize().width / 2 - this.inframundoSprite.width / 2
+            this.inframundoSprite.y = canvasSize().height / 2 - this.inframundoSprite.height / 2
+        }
 
         if (this.backgroundVideoSprite) {
             resizeCover(this.backgroundVideoSprite, this.backgroundVideoWidth, this.backgroundVideoHeight)
@@ -303,6 +314,8 @@ export default class TrackBase {
     }
 
     renderPattern() {
+        if (!this.mounted) return
+        
         if (this.patternSprite) {
             for (let index = 0; index < this.patternSprite.length; index++) {
                 const element = this.patternSprite[index];
@@ -319,6 +332,7 @@ export default class TrackBase {
     }
 
     createPattern(media, widthFrame, direction, zIndex) {
+        this.destroyPattern() 
         this.patternDirection_[zIndex] = direction
 
         const file = media.asset.value.file ? media.asset.value.file.url : media.asset.value.image.url
@@ -327,6 +341,7 @@ export default class TrackBase {
         img.crossOrigin = 'anonymous'
 
         img.onload = () => {
+            if (!this.mounted) return
             const width = media.ancho.value
             const height =  media.alto.value
 

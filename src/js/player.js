@@ -1,4 +1,4 @@
-import * as PIXI from 'pixi.js'
+import * as PIXI from 'pixi.js-legacy'
 import { TweenMax } from 'gsap/all'
 import { canvasSize } from './utils'
 
@@ -210,7 +210,20 @@ export class Player{
         if (this.song === this.data.length) {
             this.song = 0
         }
+
+        if (this.song === 0) {
+            this.onFinish()
+            return
+        }
         
         this.loadSong()
+    }
+
+    stop() {
+        if (this.audio) {
+            this.audio.pause()
+            this.audio.currentTime = 0
+        }
+        this.percent = 0   
     }
 }

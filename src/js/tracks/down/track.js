@@ -2,7 +2,7 @@ import { TwistFilter } from 'pixi-filters'
 import TrackBase from '../trask-base'
 import { canvasSize } from '../../utils'
 import {TweenMax,TimelineMax} from 'gsap'
-import * as PIXI from 'pixi.js'
+import * as PIXI from 'pixi.js-legacy'
 
 const LAYOUT_START = 'layoutStart'
 

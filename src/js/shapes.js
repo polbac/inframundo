@@ -1,4 +1,4 @@
-import * as PIXI from 'pixi.js'
+import * as PIXI from 'pixi.js-legacy'
 import { OldFilmFilter } from 'pixi-filters'
 import { canvasSize, getPixiSprite } from './utils'
 import { TweenMax } from 'gsap/gsap-core'

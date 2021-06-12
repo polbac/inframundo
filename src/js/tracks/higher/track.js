@@ -6,7 +6,7 @@ import {CRTFilter} from '@pixi/filter-crt';
 
 import { canvasSize, getPixiSprite } from '../../utils'
 import {TweenMax} from 'gsap'
-import * as PIXI from 'pixi.js'
+import * as PIXI from 'pixi.js-legacy'
 
 const LAYOUT_START = 'layoutStart'
 
@@ -386,7 +386,6 @@ export default class Higher extends TrackBase{
     }
     
     destroy() {
-
         if (this.animatedWonder){
             clearTimeout(this.wonderTimeout)
             TweenMax.killTweensOf(this.animatedWonder)

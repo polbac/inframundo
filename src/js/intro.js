@@ -1,5 +1,5 @@
-import * as PIXI from 'pixi.js'
-import { canvasSize, getPixiSpriteString } from './utils'
+import * as PIXI from 'pixi.js-legacy'
+import { canvasSize } from './utils'
 import {ReflectionFilter} from '@pixi/filter-reflection';
 import {TweenMax} from 'gsap';
 
@@ -51,6 +51,7 @@ export default class Intro{
         this.enterSprite.buttonMode = true
         this.enterSprite.cursor = 'pointer'
         this.enterSprite.defaultCursor = 'pointer';
+        
         const path = '/assets/inframundo.png'
         
         const texture = PIXI.Texture.from(path);
@@ -62,9 +63,23 @@ export default class Intro{
             this.resize()
         }
         image.src = path
+
+
+        const pathPolbac = '/assets/polbac.png'
+        
+        const texturePolbac = PIXI.Texture.from(pathPolbac);
+        this.polbacSprite = new PIXI.Sprite(texturePolbac)
+        this.polbacSprite.alpha = 0
+        const imagePolbac = new Image()
+        imagePolbac.onload = () => {
+            TweenMax.to(this.polbacSprite, 1, { alpha: 1 })
+            this.resize()
+        }
+        imagePolbac.src = pathPolbac
         
 
         this.sprite.addChild(this.inframundoSprite)
+        this.sprite.addChild(this.polbacSprite)
         this.filter = new ReflectionFilter()
         
         this.inframundoSprite.filters = [this.filter]
@@ -93,6 +108,37 @@ export default class Intro{
     }
 
     resize() {
+        let inframundoWidth = 700
+        let inframundoHeight
+
+        if (canvasSize().width < 700) {
+            inframundoWidth = canvasSize().width - 20
+        }
+
+        inframundoHeight = 214 * inframundoWidth /  944
+
+        this.inframundoSprite.width = inframundoWidth
+        this.inframundoSprite.height = inframundoHeight
+
+        this.inframundoSprite.x = canvasSize().width / 2 -this.inframundoSprite.width / 2
+        this.inframundoSprite.y = canvasSize().height / 2 -this.inframundoSprite.height / 2
+
+        let polbacWidth = 120
+        let polbacHeight
+
+        if (canvasSize().width < 120) {
+            polbacWidth = canvasSize().width - 30
+        }
+
+        polbacHeight = 131 * polbacWidth  /511
+
+        
+        this.polbacSprite.width = polbacWidth
+        this.polbacSprite.height = polbacHeight
+
+        this.polbacSprite.x = canvasSize().width / 2 -this.polbacSprite.width / 2
+        this.polbacSprite.y = canvasSize().height * 0.2
+
         this.inframundoSprite.x = canvasSize().width / 2 -this.inframundoSprite.width / 2
         this.inframundoSprite.y = canvasSize().height / 2 -this.inframundoSprite.height / 2
 

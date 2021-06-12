@@ -2,7 +2,7 @@ import { GlowFilter } from 'pixi-filters'
 import TrackBase from '../trask-base'
 import { canvasSize, getPixiSprite } from '../../utils'
 import {TweenMax} from 'gsap'
-import * as PIXI from 'pixi.js'
+import * as PIXI from 'pixi.js-legacy'
 
 const LAYOUT_START = 'layoutStart'
 
@@ -37,7 +37,7 @@ export default class Ritmo extends TrackBase{
             { time: 0.5, call: this.card.bind(this, 2, 6) },
             { time: 0.5, call: this.card.bind(this, 1, 7) },
             { time: 0.7, call: this.card.bind(this, 1, 8) },
-            { time: 0.76, call: this.rythm.bind(this) },
+            { time: 0.71, call: this.rythm.bind(this) },
             { time: 1.25, call: this.lyon.bind(this) },
             { time: 1.40, call: this.doubleFight.bind(this) },
             { time: 1.66, call: this.doubleFightFollow.bind(this) },
@@ -195,6 +195,7 @@ export default class Ritmo extends TrackBase{
         })
 
         this.container.removeChild(this.chooseYourFighter)
+        this.chooseYourFighter = null
         
         this.currentPlayer = this.spritePlayers[selectedIndex]
 
@@ -359,6 +360,11 @@ export default class Ritmo extends TrackBase{
         if (this.intervalPlayer) {
             clearInterval(this.intervalPlayer)
             this.intervalPlayer = null
+        }
+
+        if (this.chooseYourFighter) {
+            this.container.removeChild(this.chooseYourFighter)
+            this.chooseYourFighter = null
         }
 
         this.destroyPattern()

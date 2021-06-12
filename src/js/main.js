@@ -1,7 +1,7 @@
-import * as PIXI from 'pixi.js'
+import * as PIXI from 'pixi.js-legacy'
 import { GlitchFilter } from 'pixi-filters'
 import { Player } from './player';
-import { canvasSize } from './utils'
+import { canvasSize, throttle } from './utils'
 import prismic from './repository/prismic'
 import TrackManager from './tracks/track-manager';
 import Intro from './intro';
@@ -53,27 +53,31 @@ prismic.config()
 
       TweenMax.to(intro.filter, 1, { boundary:0.06})
             
-      if (body.requestFullscreen) {
+      /* if (body.requestFullscreen) {
         body.requestFullscreen();
         
-      } else if (body.webkitRequestFullscreen) { /* Safari */
+      } else if (body.webkitRequestFullscreen) {
         body.webkitRequestFullscreen();
-      } else if (body.msRequestFullscreen) { /* IE11 */
+      } else if (body.msRequestFullscreen) {
         body.msRequestFullscreen();
-      }
+      } */
       
       document.querySelector('.legend').classList.add('none')
       
 
       TweenMax.to(intro.sprite, 3, { alpha:0, onComplete: () => {
-        intro.destroy()
-        intro = null
+        if (intro) {
+          intro.destroy()
+          intro = null
+        }
 
         player.loadSong()
         container.interactive = true
         
         document.querySelector('#next-song').addEventListener('click', () => {
+          throttle(() => {
             player.next()
+          }, 500)
         })
 
         clickInterval = setInterval(() => {
@@ -121,6 +125,21 @@ prismic.config()
     intro.enterSprite.on('click', clickEvent);
 
     player = new Player(pixi.stage, prismic, trackManager, container, pixi);
+    player.onFinish = () => {
+      Noise.play()
+      clearInterval(clickInterval)
+      document.querySelector('#next-song').style.display = 'none'
+      pixi.stage.filters = []
+      player.stop()
+      trackManager.stop()
+      
+      TweenMax.to(container, 3, { alpha: 1, delay: 3, onComplete: () => {
+        intro = new Intro(pixi, container)
+        intro.enterSprite.on('click', clickEvent);
+      }})
+      container.off()
+      
+    }
     
     new Credits(pixi.stage, container);
 

@@ -2,6 +2,7 @@ import { GlitchFilter, GodrayFilter, CRTFilter } from 'pixi-filters'
 import TrackBase from '../trask-base'
 import ImageGridTrait from '../traits/image-grid'
 import {TweenMax} from 'gsap'
+import * as PIXI from 'pixi.js-legacy' 
 
 const LAYOUT_START = 'layoutStart'
 
@@ -9,7 +10,7 @@ const LAYOUT_START = 'layoutStart'
 
 export default class Track_ extends TrackBase{
     constructor(data, pixi, container, shape) {
-        super(data, pixi, container, 'deep in the underscore', shape)
+        super(data, pixi, container, '', shape)
 
         this.layout = LAYOUT_START
         this.data = data
@@ -22,10 +23,36 @@ export default class Track_ extends TrackBase{
     }
 
     start() {
+        const path = '/assets/placa.png'
+        
+        const textureInframundo = PIXI.Texture.from(path);
+        this.inframundoSprite = new PIXI.Sprite(textureInframundo)
+        this.inframundoSprite.alpha = 0
+        const imageInframundo = new Image()
+        imageInframundo.onload = () => {
+            this.resize()
+            TweenMax.to(this.inframundoSprite, 2, { alpha: 1 })
+            TweenMax.to(this.inframundoSprite, 2, { alpha: 0, delay: 8, onComplete() {
+                if (this.inframundoSprite) {
+                    this.container.removeChild(this.inframundoSprite)
+                    this.inframundoSprite = null
+                }
+            } })
+            
+        }
+        imageInframundo.src = path
+        
+        this.container.addChild(this.inframundoSprite)
+        this.inframundoSprite.zIndex =  999999
+
+        TweenMax.to(this.inframundoSprite, 1, { alpha: 1 })
+        
+
         TweenMax.set(this.container, { alpha: 1 })
         this.setAreas([
             { time: 0, call: this.init.bind(this) },
             { time: 0.45, call: this.middle.bind(this) },
+            { time: 1.25, call: this.middle2.bind(this) },
             { time: 2.75, call: this.startEnd.bind(this) },
             { time: 3, call: this.finishEnd.bind(this) } ,
             { time: 4, call: this.finish.bind(this) } 
@@ -33,6 +60,7 @@ export default class Track_ extends TrackBase{
     }
 
     init() {
+
         
         const assets = this.getAssets()
         
@@ -45,12 +73,14 @@ export default class Track_ extends TrackBase{
     }
 
     middle() {
+        console.log('middle')
         const assets = this.getAssets()
 
         this.setRandomBackgrounds([
             assets[2],
             assets[3],
         ])
+        this.destroyImageGrid()
 
         this.createImageGrid([
             assets[4],
@@ -65,6 +95,29 @@ export default class Track_ extends TrackBase{
         ],
         this.container)
     }
+    middle2() {
+        this.destroyImageGrid() 
+        const assets = this.getAssets()
+
+        this.setRandomBackgrounds([
+            assets[14],
+            assets[16],
+        ])
+        console.log('middle2')
+        this.createImageGrid([
+            assets[15],
+            assets[15],
+            assets[16],
+            assets[17],
+            assets[18],
+            assets[19],
+            assets[20],
+            assets[21],
+            assets[22],
+            assets[23],
+        ],
+        this.container)
+    }
 
     startEnd() {
         TweenMax.to(this.container, 10, { alpha: 0 })
@@ -76,7 +129,7 @@ export default class Track_ extends TrackBase{
         const assets = this.getAssets()
 
         this.setRandomBackgrounds([
-            assets[assets.length - 1]
+            assets[13]
         ])
 
         TweenMax.to(this.container, 10, { alpha: 1 })
@@ -89,10 +142,22 @@ export default class Track_ extends TrackBase{
     
 
     destroy() {
+        console.log('destroy')
         return new Promise(resolve => {
+            if (this.inframundoSprite) {
+                TweenMax.killTweensOf(this.inframundoSprite)
+            }
             TweenMax.to(this.container, 2, { alpha: 0, onComplete: () => {
+                if (this.inframundoSprite) {
+                    if (this.container) {
+                        this.container.removeChild(this.inframundoSprite)
+                    }
+                    this.inframundoSprite = null
+                }
+                this.destroyPattern()
                 this.destroyAreas()
                 this.destroyImageGrid()
+                this.destroyBackground()
                 this.container.removeChild(this.trackSprite)
                 resolve()
             } })

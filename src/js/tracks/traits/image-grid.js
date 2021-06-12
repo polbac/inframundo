@@ -2,15 +2,18 @@ import { getPixiSprite, canvasSize } from '../../utils'
 import {TweenMax} from 'gsap'
 export default {
     createImageGrid(assets, container) {
+        this.isGridActive = true
         this.assetsGrid = [...assets]
         this.container = container
         this.objects = []
-
+        
         this.interval = setInterval(this.create.bind(this), 6000)
         this.create()
     },
 
     create() {
+        if (!this.isGridActive) return
+        console.log('create')
         if (this.objects.length === this.assetsGrid.length) {
             this.objects = []
         }
@@ -56,6 +59,7 @@ export default {
     
 
     resizeAndPosition(sprite, media) {
+        if (!this.isGridActive) return
         const { alto, ancho } = media
         const res = ancho.value / alto.value
         const screen = canvasSize()
@@ -73,6 +77,7 @@ export default {
     },
 
     getRandomAssets() {
+        if (!this.isGridActive) return
         let total = Math.ceil(Math.random() * 4)
 
         if (total > 4){
@@ -105,6 +110,7 @@ export default {
         if (!this.objects || !this.objects.length) return
 
         this.objects.forEach((object, index) => {
+            TweenMax.killTweensOf(object.sprite)
             this.container.removeChild(object.sprite)
             object.texture.destroy(true)
         })
@@ -114,6 +120,7 @@ export default {
     },
 
     destroyImageGrid() {
+        this.isGridActive = false
         clearInterval(this.interval)
         this.destroySprites()
     }
