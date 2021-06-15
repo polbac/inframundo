@@ -1,3 +1,3 @@
 # inframundo
 
-<img src="cover.png" width="300">
+<img src="cover.png">
