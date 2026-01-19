@@ -2,8 +2,11 @@ const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
 
 module.exports = merge(common, {
-  mode:'production',
+  mode: 'production',
   devtool: 'source-map',
+  resolve: {
+    extensions: ['*', '.mjs', '.js', '.json'], // Add '.mjs' to extensions
+  },
   module: {
     rules: [{
       test: /\.js$/,
@@ -20,6 +23,11 @@ module.exports = merge(common, {
           plugins: ['@babel/plugin-transform-runtime']
         }
       }
-    }]
+    },
+    {
+      test: /\.mjs$/,
+      include: /node_modules/,
+      type: 'javascript/auto',
+    },]
   }
 })
